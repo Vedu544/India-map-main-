@@ -13,7 +13,7 @@ app.use(cors({
     // Allow localhost by default for development
     if (!origin || 
         origin === 'http://localhost:5173' || 
-        origin === 'http://127.0.0.1:5173' ||
+        origin === 'https://india-map-main-production.up.railway.app/' ||
         // Also allow the Render deployment URL
         origin === 'https://india-map-main.onrender.com') {
       callback(null, true);
