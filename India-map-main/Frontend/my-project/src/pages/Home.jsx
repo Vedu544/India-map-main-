@@ -71,7 +71,10 @@ const StateCard = ({ selectedState, onClose }) => {
     
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:3000/api/tags/${selectedState.stateCode}`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/tags/${selectedState.stateCode}`,
+        { withCredentials: true }
+      );      
       setTags(response.data);
     } catch (error) {
       console.error('Error fetching tags:', error);
@@ -85,7 +88,9 @@ const StateCard = ({ selectedState, onClose }) => {
     if (tags.length === 0) return;
     
     try {
-      await axios.put(`http://localhost:3000/api/tags/upvote/${tags[0]._id}`);
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/tags/upvote/${tags[0]._id}`,
+        { withCredentials: true }
+      );
       setToastMessage('Upvote successful!');
       setShowToast(true);
       await fetchTags();
@@ -104,10 +109,12 @@ const StateCard = ({ selectedState, onClose }) => {
 
     setSubmitting(true);
     try {
-      await axios.post('http://localhost:3000/api/tags', {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/tags`, {
         state_code: selectedState.stateCode,
         tag_name: selectedTag
-      });
+      },
+      { withCredentials: true }
+      );
       
       setToastMessage('New tag added!');
       setShowToast(true);
@@ -241,8 +248,12 @@ const GrowthCard = ({ selectedState, onClose }) => {
     setLoading(true);
     try {
       const [response1, response2] = await Promise.all([
-        axios.get(`http://localhost:3000/api/data/gsdp/${selectedState.stateCode}/${year1}`),
-        axios.get(`http://localhost:3000/api/data/gsdp/${selectedState.stateCode}/${year2}`)
+        axios.get(`${import.meta.env.VITE_API_URL}/api/data/gsdp/${selectedState.stateCode}/${year1}`,
+          { withCredentials: true }
+        ),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/data/gsdp/${selectedState.stateCode}/${year2}`,
+          { withCredentials: true }
+        )
       ]);
       setGsdp1(response1.data.gsdp ?? 'N/A');
       setGsdp2(response2.data.gsdp ?? 'N/A');
