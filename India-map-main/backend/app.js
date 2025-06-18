@@ -11,7 +11,11 @@ const app = express();
 app.use(cors({
   origin: function (origin, callback) {
     // Allow localhost by default for development
-    if (!origin || origin === 'http://localhost:5173' || origin === 'http://127.0.0.1:5173') {
+    if (!origin || 
+        origin === 'http://localhost:5173' || 
+        origin === 'http://127.0.0.1:5173' ||
+        // Also allow the Render deployment URL
+        origin === 'https://india-map-main.onrender.com') {
       callback(null, true);
     } else {
       // For production, check against allowedOrigins
@@ -25,12 +29,12 @@ app.use(cors({
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: false // Explicitly disable credentials
 }));
 
 app.use(express.json({ limit: '50kb' }));
 app.use(express.urlencoded({ extended: true, limit: '50kb' }));
-app.use(cookieParser());
 
 // Routes
 app.use('/api/data', dataRoutes);
