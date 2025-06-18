@@ -7,7 +7,7 @@ import stateRoutes from "./routes/stateRoutes.js";
 
 const app = express();
 
-// Safe CORS setup
+// Safe CORS setup without credentials
 const allowedOrigins = process.env.CORS_ORIGIN.split(',');
 
 app.use(cors({
@@ -15,15 +15,16 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.error("Blocked by CORS:", origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json({ limit: '50kb' }));
 app.use(express.urlencoded({ extended: true, limit: '50kb' }));
-
 app.use(cookieParser());
 
 // Routes
@@ -34,3 +35,4 @@ app.use('/api/states', stateRoutes);
 app.use(express.static('public'));
 
 export { app };
+

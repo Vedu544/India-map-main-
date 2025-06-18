@@ -378,7 +378,9 @@ function HomePage() {
   useEffect(() => {
     const fetchGsdpData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/data/gsdp/${selectedYear}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/data/gsdp/${selectedYear}`,
+          { withCredentials: true }
+        );
         setGsdpData(response.data);
       } catch (error) {
         console.error('Error fetching GSDP data:', error);
