@@ -8,15 +8,20 @@ import stateRoutes from "./routes/stateRoutes.js";
 const app = express();
 
 // Safe CORS setup without credentials
-const allowedOrigins = process.env.CORS_ORIGIN.split(',');
-
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow localhost by default for development
+    if (!origin || origin === 'http://localhost:5173' || origin === 'http://127.0.0.1:5173') {
       callback(null, true);
     } else {
-      console.error("Blocked by CORS:", origin);
-      callback(new Error('Not allowed by CORS'));
+      // For production, check against allowedOrigins
+      const allowedOrigins = process.env.CORS_ORIGIN?.split(',') || [];
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.error("Blocked by CORS:", origin);
+        callback(new Error('Not allowed by CORS'));
+      }
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -35,4 +40,3 @@ app.use('/api/states', stateRoutes);
 app.use(express.static('public'));
 
 export { app };
-
