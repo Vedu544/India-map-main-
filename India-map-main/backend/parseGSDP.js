@@ -15,7 +15,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   .catch(err => console.error('MongoDB Connection Error:', err));
 
 
-  const filePath = path.join('C:', 'Users', 'Vedant', 'Downloads', 'GSDP_Current_2011-12_State_wise.csv');
+  const filePath = path.join(__dirname, 'data', 'GSDP_Current_2011-12_State_wise.csv');
 
 fs.createReadStream(filePath)
   .pipe(csv())
