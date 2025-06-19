@@ -2,8 +2,8 @@ import fs from 'fs';
 import csv from 'csv-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import GSDP from './models/gsdpModel.js'; // Ensure this model exists
-import State from './models/stateModel.js'; // Ensure this model exists
+import GSDP from './models/gsdpModel.js'; 
+import State from './models/stateModel.js';
 import path from 'path';
 dotenv.config();
 
@@ -24,10 +24,7 @@ fs.createReadStream(filePath)
     const stateName = row['State/Uts'];
     const stateCode = row['State_code'];
     
-    // Handle special cases like "Jammu & Kashmir-U.T."
-    const isSpecialCase = stateName.includes('Jammu & Kashmir');
-    
-    console.log('Processing:', stateName, '(', stateCode, ')');
+
     
     // Iterate over each column except the state column
     for (const [key, value] of Object.entries(row)) {

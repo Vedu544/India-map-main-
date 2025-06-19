@@ -25,9 +25,9 @@ const sampleTags = [
   'Healthcare Hub'
 ];
 
+//toast - notifications
 const Toast = ({ isVisible, onClose, message }) => {
   if (!isVisible) return null;
-
   return (
     <div className="fixed top-4 left-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-fade-in">
       <div className="flex items-center justify-between">
@@ -49,6 +49,7 @@ Toast.propTypes = {
   message: PropTypes.string.isRequired,
 };
 
+//state / tag  card
 const StateCard = ({ selectedState, onClose }) => {
   const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -133,6 +134,7 @@ const StateCard = ({ selectedState, onClose }) => {
         message={toastMessage}
       />
 
+      {/*state card / Tag card*/}
       <div className="bg-white border-2 border-blue-300 rounded-lg shadow-lg p-4 lg:w-[250px] w-full max-w-md">
         <div className="flex justify-between items-start mb-3">
           <div>
@@ -213,6 +215,7 @@ StateCard.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
+//growth card
 const GrowthCard = ({ selectedState, onClose }) => {
   const [year1, setYear1] = useState('2012-13');
   const [year2, setYear2] = useState('2013-14');
@@ -377,10 +380,12 @@ function HomePage() {
     setSelectedStateForGrowth(stateInfo);
   };
 
+  //close state card
   const handleCloseStateCard = () => {
     setSelectedStateForTags(null);
   };
 
+  //close growth card
   const handleCloseGrowthCard = () => {
     setSelectedStateForGrowth(null);
   };
