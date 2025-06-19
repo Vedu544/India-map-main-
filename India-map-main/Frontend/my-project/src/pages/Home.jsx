@@ -8,7 +8,6 @@ const years = [
   '2016-17', '2017-18', '2018-19', '2019-20', '2020-21'
 ];
 
-// Sample tags for dropdown
 const sampleTags = [
   'High Growth',
   'Industrial Hub',
@@ -26,7 +25,6 @@ const sampleTags = [
   'Healthcare Hub'
 ];
 
-// Toast Notification Component
 const Toast = ({ isVisible, onClose, message }) => {
   if (!isVisible) return null;
 
@@ -34,7 +32,7 @@ const Toast = ({ isVisible, onClose, message }) => {
     <div className="fixed top-4 left-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-fade-in">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium">{message}</span>
-        <button 
+        <button
           onClick={onClose}
           className="ml-3 text-white hover:text-gray-200"
         >
@@ -51,7 +49,6 @@ Toast.propTypes = {
   message: PropTypes.string.isRequired,
 };
 
-// State Card Component (for tags and upvotes)
 const StateCard = ({ selectedState, onClose }) => {
   const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -68,12 +65,12 @@ const StateCard = ({ selectedState, onClose }) => {
 
   const fetchTags = async () => {
     if (!selectedState?.stateCode) return;
-    
+
     setLoading(true);
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/tags/${selectedState.stateCode}`
-      );      
+      );
       setTags(response.data);
     } catch (error) {
       console.error('Error fetching tags:', error);
@@ -85,7 +82,7 @@ const StateCard = ({ selectedState, onClose }) => {
 
   const handleUpvoteAll = async () => {
     if (tags.length === 0) return;
-    
+
     try {
       await axios.put(`${import.meta.env.VITE_API_URL}/api/tags/upvote/${tags[0]._id}`);
       setToastMessage('Upvote successful!');
@@ -110,7 +107,7 @@ const StateCard = ({ selectedState, onClose }) => {
         state_code: selectedState.stateCode,
         tag_name: selectedTag
       });
-      
+
       setToastMessage('New tag added!');
       setShowToast(true);
       setSelectedTag('');
@@ -124,20 +121,19 @@ const StateCard = ({ selectedState, onClose }) => {
     }
   };
 
-  // Calculate total upvotes
   const totalUpvotes = tags.reduce((sum, tag) => sum + tag.upvotes, 0);
 
   if (!selectedState) return null;
 
   return (
     <>
-      <Toast 
-        isVisible={showToast} 
+      <Toast
+        isVisible={showToast}
         onClose={() => setShowToast(false)}
         message={toastMessage}
       />
-      
-      <div className="fixed top-4 right-4 bg-white border-2 border-blue-300 rounded-lg shadow-lg p-4 w-64 z-40">
+
+      <div className="bg-white border-2 border-blue-300 rounded-lg shadow-lg p-4 lg:w-[250px] w-full max-w-md">
         <div className="flex justify-between items-start mb-3">
           <div>
             <h2 className="text-lg font-bold text-gray-800">{selectedState.stateName}</h2>
@@ -153,7 +149,7 @@ const StateCard = ({ selectedState, onClose }) => {
 
         <div className="mb-3">
           <h3 className="text-sm font-semibold mb-2 text-gray-700">Development Tags</h3>
-          
+
           {loading ? (
             <div className="text-center py-2">
               <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
@@ -173,7 +169,7 @@ const StateCard = ({ selectedState, onClose }) => {
               <p className="text-xs text-gray-600 mb-3">Total Upvotes: {totalUpvotes}</p>
               <button
                 onClick={handleUpvoteAll}
-                className="w-full bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600 transition-colors text-sm font-medium mb-3"
+                className="w-full bg-green-500 cursor-pointer text-white px-3 py-2 rounded-md hover:bg-green-600 transition-colors text-sm font-medium mb-3"
               >
                 Upvote
               </button>
@@ -182,22 +178,22 @@ const StateCard = ({ selectedState, onClose }) => {
 
           <div className="border-t pt-3">
             <h4 className="text-sm font-semibold mb-2 text-gray-700">Add New Tag</h4>
-            
+
             <select
               value={selectedTag}
               onChange={(e) => setSelectedTag(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 cursor-pointer border border-gray-300 rounded-md text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:cursor-pointer"
             >
               <option value="">Select a tag...</option>
               {sampleTags.map(tag => (
-                <option key={tag} value={tag}>{tag}</option>
+                <option  className="cursor-pointer" key={tag} value={tag}>{tag}</option>
               ))}
             </select>
 
             <button
               onClick={handleSubmitTag}
               disabled={!selectedTag || submitting}
-              className="w-full bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition-colors text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full bg-blue-500 cursor-pointer text-white px-3 py-2 rounded-md hover:bg-blue-600 transition-colors text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {submitting ? 'Submitting...' : 'Submit Tag'}
             </button>
@@ -217,7 +213,6 @@ StateCard.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-// Growth Card Component (for GSDP comparison)
 const GrowthCard = ({ selectedState, onClose }) => {
   const [year1, setYear1] = useState('2012-13');
   const [year2, setYear2] = useState('2013-14');
@@ -227,7 +222,7 @@ const GrowthCard = ({ selectedState, onClose }) => {
   const [growthResult, setGrowthResult] = useState('');
 
   useEffect(() => {
-    setGrowthResult(''); // Reset growthResult on state change
+    setGrowthResult('');
     if (selectedState) {
       fetchGsdpData();
     } else {
@@ -263,7 +258,6 @@ const GrowthCard = ({ selectedState, onClose }) => {
       return;
     }
 
-    // Convert years to numbers for comparison (e.g., 2012 for 2012-13)
     const year1Num = parseInt(year1.split('-')[0]);
     const year2Num = parseInt(year2.split('-')[0]);
     const [baseYear, compYear, baseGsdp, compGsdp] = year1Num < year2Num
@@ -279,7 +273,7 @@ const GrowthCard = ({ selectedState, onClose }) => {
   if (!selectedState) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 bg-white border-2 border-blue-300 rounded-lg shadow-lg p-5 w-80 z-40">
+    <div className="bg-white border-2 border-blue-300 rounded-lg shadow-lg p-5 w-full max-w-md">
       <div className="flex justify-between items-start mb-3">
         <div>
           <h2 className="text-lg font-bold text-gray-800">{selectedState.stateName}</h2>
@@ -295,16 +289,16 @@ const GrowthCard = ({ selectedState, onClose }) => {
 
       <div className="mb-3">
         <h3 className="text-sm font-semibold mb-2 text-gray-700">GSDP Comparison</h3>
-        
+
         <div className="mb-3">
           <label className="text-xs font-medium text-gray-700">Base Year</label>
           <select
             value={year1}
             onChange={(e) => setYear1(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 cursor-pointer border border-gray-300 rounded-md text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:cursor-pointer"
           >
             {years.filter(year => year !== year2).map(year => (
-              <option key={year} value={year}>{year}</option>
+              <option key={year} value={year} className="cursor-pointer">{year}</option>
             ))}
           </select>
           {loading ? (
@@ -321,10 +315,10 @@ const GrowthCard = ({ selectedState, onClose }) => {
           <select
             value={year2}
             onChange={(e) => setYear2(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 cursor-pointer border border-gray-300 rounded-md text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:cursor-pointer"
           >
             {years.filter(year => year !== year1).map(year => (
-              <option key={year} value={year}>{year}</option>
+              <option key={year} value={year} className="cursor-pointer">{year}</option>
             ))}
           </select>
           {loading ? (
@@ -338,7 +332,7 @@ const GrowthCard = ({ selectedState, onClose }) => {
 
         <button
           onClick={handleCalculateGrowth}
-          className="w-full bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition-colors text-sm font-medium mb-3"
+          className="w-full bg-blue-500 cursor-pointer text-white px-3 py-2 rounded-md hover:bg-blue-600 transition-colors text-sm font-medium mb-3"
         >
           Calculate Growth
         </button>
@@ -401,7 +395,7 @@ function HomePage() {
             id="year-select"
             value={selectedYear}
             onChange={(e) => setSelectedYear(e.target.value)}
-            className="p-2 border rounded-md"
+            className="p-2 border rounded-md hover:cursor-pointer"
           >
             {years.map(year => (
               <option key={year} value={year}>{year}</option>
@@ -412,25 +406,36 @@ function HomePage() {
           Colors: Light Gray (GSDP N/A), Red (Low GSDP), Green (High GSDP), White (Borders)
         </p>
       </div>
-      
+
       <div className="w-full max-w-4xl h-[500px] bg-white shadow-lg rounded-lg">
         <Map gsdpData={gsdpData} onStateClick={handleStateClick} />
       </div>
-      
-      <StateCard 
-        selectedState={selectedStateForTags} 
-        onClose={handleCloseStateCard}
-      />
-      <GrowthCard 
-        selectedState={selectedStateForGrowth} 
-        onClose={handleCloseGrowthCard}
-      />
+
+      {/* Mobile layout only */}
+      <div className="md:hidden w-full flex flex-col items-center space-y-4 mt-4">
+        {selectedStateForTags && (
+          <StateCard selectedState={selectedStateForTags} onClose={handleCloseStateCard} />
+        )}
+        {selectedStateForGrowth && (
+          <GrowthCard selectedState={selectedStateForGrowth} onClose={handleCloseGrowthCard} />
+        )}
+      </div>
+
+      {/* Desktop layout (unchanged fixed cards) */}
+      <div className="hidden md:block">
+        {selectedStateForTags && (
+          <div className="fixed top-4 right-4 z-40">
+            <StateCard selectedState={selectedStateForTags} onClose={handleCloseStateCard} />
+          </div>
+        )}
+        {selectedStateForGrowth && (
+          <div className="fixed bottom-4 left-4 z-40">
+            <GrowthCard selectedState={selectedStateForGrowth} onClose={handleCloseGrowthCard} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
-
-HomePage.propTypes = {
-  // No props passed to HomePage, but included for completeness
-};
 
 export default HomePage;
